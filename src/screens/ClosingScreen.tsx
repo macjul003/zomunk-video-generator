@@ -3,6 +3,7 @@ import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } f
 import { loadFont } from "@remotion/google-fonts/PlusJakartaSans";
 
 const { fontFamily } = loadFont();
+const S = (n: number) => n * (1080 / 390);
 
 export const ClosingScreen: React.FC = () => {
   const frame = useCurrentFrame();
@@ -23,7 +24,7 @@ export const ClosingScreen: React.FC = () => {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
-  const line1Y = interpolate(frame, [22, 38], [30, 0], {
+  const line1Y = interpolate(frame, [22, 38], [S(30), 0], {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
@@ -32,7 +33,7 @@ export const ClosingScreen: React.FC = () => {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
-  const line2Y = interpolate(frame, [30, 46], [20, 0], {
+  const line2Y = interpolate(frame, [30, 46], [S(20), 0], {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
@@ -41,7 +42,7 @@ export const ClosingScreen: React.FC = () => {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
-  const btnY = interpolate(frame, [42, 60], [40, 0], {
+  const btnY = interpolate(frame, [42, 60], [S(40), 0], {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });

@@ -7,6 +7,28 @@ import type { DealInput } from "../types/DealInput";
 const { fontFamily } = loadFont();
 const S = (n: number) => n * (1080 / 390);
 
+type AirportInfo = { code: string; airport: string; city: string; country: string };
+const CITY_MAP: Record<string, AirportInfo> = {
+  "New Delhi":   { code: "DEL", airport: "Indira Gandhi Int'l", city: "New Delhi",  country: "India"       },
+  "Casablanca":  { code: "CMN", airport: "Mohammed V Int'l",    city: "Casablanca", country: "Morocco"     },
+  "Singapore":   { code: "SIN", airport: "Changi Airport",      city: "Singapore",  country: "Singapore"   },
+  "Seoul":       { code: "ICN", airport: "Incheon Int'l",       city: "Seoul",      country: "South Korea" },
+  "Amsterdam":   { code: "AMS", airport: "Amsterdam Schiphol",  city: "Amsterdam",  country: "Netherlands" },
+  "Paris":       { code: "CDG", airport: "Charles de Gaulle",   city: "Paris",      country: "France"      },
+  "Mumbai":      { code: "BOM", airport: "Chhatrapati Shivaji", city: "Mumbai",     country: "India"       },
+  "Bangalore":   { code: "BLR", airport: "Kempegowda Int'l",    city: "Bangalore",  country: "India"       },
+  "Dubai":       { code: "DXB", airport: "Dubai Int'l",         city: "Dubai",      country: "UAE"         },
+  "London":      { code: "LHR", airport: "Heathrow",            city: "London",     country: "UK"          },
+};
+
+function lookupCity(name: string): AirportInfo {
+  return CITY_MAP[name] ?? { code: name.slice(0, 3).toUpperCase(), airport: name, city: name, country: "" };
+}
+
+function parsePrice(p: string): number {
+  return parseInt(p.replace(/[₹,\s]/g, ""), 10) || 0;
+}
+
 function makeAnim(frame: number, start: number, end: number, fromY = S(30)) {
   const opacity = interpolate(frame, [start, end], [0, 1], { easing: Easing.bezier(0.16, 1, 0.3, 1), extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const y = interpolate(frame, [start, end], [fromY, 0], { easing: Easing.bezier(0.16, 1, 0.3, 1), extrapolateLeft: "clamp", extrapolateRight: "clamp" });
@@ -53,6 +75,16 @@ const SimilarDealRow: React.FC<{
 
 export const DetailsScreen: React.FC<DealInput> = (props) => {
   const frame = useCurrentFrame();
+
+  const dep = lookupCity(props.departure);
+  const dst = lookupCity(props.destination);
+
+  const origNum  = parsePrice(props.originalPrice);
+  const priceNum = parsePrice(props.price);
+  const animatedPrice = Math.round(
+    interpolate(frame, [20, 50], [origNum, priceNum], { easing: Easing.bezier(0.16, 1, 0.3, 1), extrapolateLeft: "clamp", extrapolateRight: "clamp" })
+  );
+  const formattedPrice = "₹" + animatedPrice.toLocaleString("en-IN");
 
   const bgOpacity = interpolate(frame, [0, 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const navAnim = makeAnim(frame, 5, 18, S(-15));
@@ -114,7 +146,7 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
             {props.destination}
           </p>
           <p style={{ margin: 0, fontSize: S(15), fontWeight: 400, color: "#000000", letterSpacing: `-${0.23 * (1080 / 390)}px`, lineHeight: `${S(20)}px`, opacity: subtitleOpacity, fontFamily }}>
-            United States
+            {dst.country}
           </p>
         </div>
       </div>
@@ -147,30 +179,30 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
               {/* ── Depart section ── */}
               <span style={{ fontSize: S(13), fontWeight: 400, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Depart</span>
               <div style={{ display: "flex", alignItems: "flex-start", gap: S(16) }}>
-                {/* From (MAA) */}
+                {/* From (departure) */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
                     <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
                     <DashedLine />
                   </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>MAA</span>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dep.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, fontFamily }}>
-                    <div>Chennai</div>
-                    <div>International Airport</div>
+                    <div>{dep.city}</div>
+                    <div>{dep.airport}</div>
                   </div>
                 </div>
                 {/* Direct */}
                 <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, paddingTop: S(8), flexShrink: 0 }}>direct</span>
-                {/* To (PDX) */}
+                {/* To (destination) */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), alignItems: "flex-end", minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: S(9), width: "100%" }}>
                     <DashedLine />
                     <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
                   </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>PDX</span>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>{dst.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, textAlign: "right", fontFamily }}>
-                    <div>Portland</div>
-                    <div>International Airport</div>
+                    <div>{dst.city}</div>
+                    <div>{dst.airport}</div>
                   </div>
                 </div>
               </div>
@@ -178,30 +210,30 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
               {/* ── Return section ── */}
               <span style={{ fontSize: S(13), fontWeight: 400, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Return</span>
               <div style={{ display: "flex", alignItems: "flex-start", gap: S(16) }}>
-                {/* From (PDX) */}
+                {/* From (destination) */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
                     <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
                     <DashedLine />
                   </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>PDX</span>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dst.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, fontFamily }}>
-                    <div>Portland</div>
-                    <div>International Airport</div>
+                    <div>{dst.city}</div>
+                    <div>{dst.airport}</div>
                   </div>
                 </div>
                 {/* Direct */}
                 <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, paddingTop: S(8), flexShrink: 0 }}>direct</span>
-                {/* To (MAA) */}
+                {/* To (departure) */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), alignItems: "flex-end", minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: S(9), width: "100%" }}>
                     <DashedLine />
                     <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
                   </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>MAA</span>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>{dep.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, textAlign: "right", fontFamily }}>
-                    <div>Chennai</div>
-                    <div>International Airport</div>
+                    <div>{dep.city}</div>
+                    <div>{dep.airport}</div>
                   </div>
                 </div>
               </div>
@@ -264,13 +296,13 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
         {/* Price section */}
         <div style={{ display: "flex", flexDirection: "column", gap: S(2) }}>
           <div style={{ display: "flex", gap: S(8), alignItems: "flex-end" }}>
-            <span style={{ fontSize: S(17), fontWeight: 700, color: "#45B662", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{props.price}</span>
+            <span style={{ fontSize: S(17), fontWeight: 700, color: "#45B662", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{formattedPrice}</span>
             <span style={{ fontSize: S(17), fontWeight: 400, color: "#3A3A3C", opacity: 0.5, textDecoration: "line-through", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{props.originalPrice}</span>
           </div>
           <span style={{ fontSize: S(12), fontStyle: "italic", color: "#3A3A3C", opacity: 0.7, lineHeight: `${S(16)}px`, fontFamily }}>Deal lasts 4 days</span>
         </div>
-        {/* Book Deal button: bg #007AFF, rounded-8, px=28, py=14 */}
-        <div style={{ background: "#007AFF", borderRadius: S(8), paddingLeft: S(28), paddingRight: S(28), paddingTop: S(14), paddingBottom: S(14) }}>
+        {/* Book Deal button */}
+        <div style={{ background: "#7C3AED", borderRadius: S(8), paddingLeft: S(28), paddingRight: S(28), paddingTop: S(14), paddingBottom: S(14) }}>
           <span style={{ fontSize: S(17), fontWeight: 400, color: "#FFFFFF", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>Book Deal</span>
         </div>
       </div>
