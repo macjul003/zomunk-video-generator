@@ -8,6 +8,32 @@ A tool for generating flight deal reels as MP4 videos. Fill in deal details, pre
 - **Render server** — takes the form data and renders a full MP4 video using Remotion
 - **Remotion studio** — optional, for frame-by-frame inspection of the animation
 
+## Getting the latest updates
+
+When a teammate says "pull the latest", "update the app", "get the latest changes", or similar, do the following:
+
+### 1. Pull latest changes
+
+```bash
+git pull
+```
+
+### 2. Install any new dependencies
+
+```bash
+npm install
+```
+
+### 3. Restart the tool
+
+```bash
+lsof -ti :3003,3006 | xargs kill -9 2>/dev/null; npm run tool
+```
+
+Then open http://localhost:3006 — everything is up to date.
+
+---
+
 ## First-time setup
 
 When a teammate says "set it up" or "get this running", do the following in order:
