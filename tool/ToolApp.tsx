@@ -8,10 +8,16 @@ import { useObjectUrl } from "./useObjectUrl";
 const DEFAULT_DEAL: DealInput = {
   destinationImageUrl: "/figma-casablanca.png",
   destination: "Casablanca",
+  country: "Morocco",
   departure: "New Delhi",
   price: "₹98,240",
   originalPrice: "₹1,28,298",
   months: "Jan, Mar - Jun",
+  stops: "1 stop",
+  travelClass: "Economy",
+  travelPeriod: "Sept – Dec 2026",
+  airlineLogoUrl: "/airline-air-india.png",
+  airlineName: "Emirates",
 };
 
 const SCALE = 390 / 1080;
@@ -37,13 +43,16 @@ function PhonePreview({ label, children }: { label: string; children: React.Reac
 export function ToolApp() {
   const [deal, setDeal] = useState<DealInput>(DEFAULT_DEAL);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [airlineLogoFile, setAirlineLogoFile] = useState<File | null>(null);
   const [rendering, setRendering] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const imageUrl = useObjectUrl(imageFile);
+  const airlineLogoUrl = useObjectUrl(airlineLogoFile);
   const inputProps: DealInput = {
     ...deal,
     destinationImageUrl: imageUrl ?? deal.destinationImageUrl,
+    airlineLogoUrl: airlineLogoUrl ?? deal.airlineLogoUrl,
   };
 
   async function handleRender() {
@@ -53,8 +62,10 @@ export function ToolApp() {
       const fd = new FormData();
       fd.append("deal", JSON.stringify(inputProps));
       if (imageFile) fd.append("destImage", imageFile);
+      if (airlineLogoFile) fd.append("airlineLogo", airlineLogoFile);
 
-      const res = await fetch("http://localhost:3003/render", { method: "POST", body: fd });
+      const renderUrl = `http://${window.location.hostname}:3003/render`;
+      const res = await fetch(renderUrl, { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
 
       const blob = await res.blob();
@@ -91,6 +102,8 @@ export function ToolApp() {
           onChange={(patch) => setDeal((d) => ({ ...d, ...patch }))}
           imageFile={imageFile}
           onImageChange={setImageFile}
+          airlineLogoFile={airlineLogoFile}
+          onAirlineLogoChange={setAirlineLogoFile}
         />
 
         {error && (

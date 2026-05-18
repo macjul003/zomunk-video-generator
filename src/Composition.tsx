@@ -2,7 +2,6 @@ import React from "react";
 import { AbsoluteFill } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
-import { flip } from "@remotion/transitions/flip";
 import { wipe } from "@remotion/transitions/wipe";
 import { SplashScreen } from "./screens/SplashScreen";
 import { ListScreen } from "./screens/ListScreen";
@@ -40,9 +39,9 @@ export const MyComposition: React.FC<DealInput> = (props) => (
           <ListScreen {...props} />
         </TransitionSeries.Sequence>
 
-        {/* Flip: tapping a card open, List → Details */}
+        {/* Slide: List → Details */}
         <TransitionSeries.Transition
-          presentation={flip({ direction: "from-right" })}
+          presentation={slide({ direction: "from-right" })}
           timing={springT}
         />
 

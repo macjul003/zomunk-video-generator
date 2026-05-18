@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   root: path.resolve("tool"),
   publicDir: path.resolve("public"),
-  server: { port: 3004 },
+  server: { port: 3004, host: true },
   resolve: {
     alias: [
       // Only alias the exact "remotion" bare import — not sub-paths like "remotion/no-react"

@@ -11,10 +11,16 @@ const SCALE = 390 / 1080;
 const DEFAULT_PROPS: DealInput = {
   destinationImageUrl: "/figma-casablanca.png",
   destination: "Casablanca",
+  country: "Morocco",
   departure: "New Delhi",
   price: "₹98,240",
   originalPrice: "₹1,28,298",
   months: "Jan, Mar - Jun",
+  stops: "1 stop",
+  travelClass: "Economy",
+  travelPeriod: "Sept – Dec 2026",
+  airlineLogoUrl: "/airline-air-india.png",
+  airlineName: "Emirates",
 };
 
 const screens = [

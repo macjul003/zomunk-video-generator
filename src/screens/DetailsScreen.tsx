@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { loadFont } from "@remotion/google-fonts/PlusJakartaSans";
-import { ArrowLeft, ArrowsLeftRight, Bag, Suitcase } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowsLeftRight, Bag, ShieldCheck, Suitcase } from "@phosphor-icons/react";
 import type { DealInput } from "../types/DealInput";
 
 const { fontFamily } = loadFont();
@@ -35,7 +35,6 @@ function makeAnim(frame: number, start: number, end: number, fromY = S(30)) {
   return { opacity, transform: `translateY(${y}px)` };
 }
 
-// Dashed line separator used between From/To labels and airport codes
 const DashedLine: React.FC = () => (
   <div style={{ flex: 1, height: 0, borderTop: `${S(1)}px dashed #C7C7CC`, minWidth: 0 }} />
 );
@@ -46,7 +45,6 @@ const SimilarDealRow: React.FC<{
   anim: React.CSSProperties;
 }> = ({ from, to, dates, meta, orig, price, disc, anim }) => (
   <div style={{ ...anim, border: `${S(1)}px solid rgba(0,0,0,0.1)`, borderRadius: S(16), padding: S(16), display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-    {/* Left: route + dates + meta */}
     <div style={{ display: "flex", flexDirection: "column", gap: S(4) }}>
       <div style={{ display: "flex", alignItems: "center", gap: S(4) }}>
         <span style={{ fontSize: S(17), fontWeight: 590, color: "#000000", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>
@@ -60,7 +58,6 @@ const SimilarDealRow: React.FC<{
       <span style={{ fontSize: S(13), fontWeight: 400, color: "#27262A", opacity: 0.7, letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>{dates}</span>
       <span style={{ fontSize: S(13), fontWeight: 400, color: "#27262A", opacity: 0.7, letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>{meta}</span>
     </div>
-    {/* Right: prices + discount badge */}
     <div style={{ display: "flex", flexDirection: "column", gap: S(2), alignItems: "flex-end" }}>
       <div style={{ display: "flex", gap: S(8), alignItems: "baseline" }}>
         <span style={{ fontSize: S(12), color: "#000000", opacity: 0.5, textDecoration: "line-through", lineHeight: `${S(16)}px`, fontFamily }}>{orig}</span>
@@ -99,14 +96,33 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
   const simAnim3 = makeAnim(frame, 68, 82, S(15));
   const bottomAnim = makeAnim(frame, 55, 70, S(40));
 
+  // Verified pill: Phase 1 — pill background opens from centre outward (clipPath inset)
+  // Phase 2 — icon + text appear inside once pill is open
+  const pillClip = interpolate(frame, [32, 44], [50, 0], {
+    easing: Easing.bezier(0.34, 1.4, 0.64, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const pillOpacity = interpolate(frame, [30, 34], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const contentOpacity = interpolate(frame, [44, 54], [0, 1], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const iconX = interpolate(frame, [44, 54], [S(-8), 0], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const textX = interpolate(frame, [46, 56], [S(8), 0], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+
   const WHITE_CARD: React.CSSProperties = { background: "#FFFFFF", borderRadius: S(16), overflow: "hidden" };
 
   return (
     <AbsoluteFill style={{ fontFamily, overflow: "hidden" }}>
-      {/* Flat bg: Backgrounds/Secondary = #F2F2F7 */}
       <div style={{ position: "absolute", inset: 0, background: "#F2F2F7", opacity: bgOpacity }} />
 
-      {/* ── Status bar: top=0, h=54 ── */}
+      {/* ── Status bar ── */}
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: `${S(16)}px ${S(24)}px 0`, height: S(54) }}>
           <span style={{ fontSize: S(17), fontWeight: 590, color: "#000000", fontFamily }}>9:41</span>
@@ -136,8 +152,8 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
         <ArrowLeft size={S(24)} color="#000000" weight="regular" />
       </div>
 
-      {/* ── Title: absolute left=139, top=78, w=112 ── */}
-      <div style={{ position: "absolute", left: S(139), top: S(78), width: S(112), zIndex: 10, display: "flex", flexDirection: "column", gap: S(16), textAlign: "center" }}>
+      {/* ── Title area ── */}
+      <div style={{ position: "absolute", left: S(56), right: S(56), top: S(78), zIndex: 10, display: "flex", flexDirection: "column", gap: S(16), textAlign: "center", alignItems: "center" }}>
         <p style={{ ...navAnim, margin: 0, fontSize: S(15), fontWeight: 400, color: "#000000", letterSpacing: `-${0.23 * (1080 / 390)}px`, lineHeight: `${S(20)}px`, fontFamily }}>
           Trip to
         </p>
@@ -146,19 +162,49 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
             {props.destination}
           </p>
           <p style={{ margin: 0, fontSize: S(15), fontWeight: 400, color: "#000000", letterSpacing: `-${0.23 * (1080 / 390)}px`, lineHeight: `${S(20)}px`, opacity: subtitleOpacity, fontFamily }}>
-            {dst.country}
+            {props.country || dst.country}
           </p>
         </div>
       </div>
 
-      {/* ── Cards area: absolute top=200, left=16, right=16, bottom=86 ── */}
-      <div style={{ position: "absolute", top: S(200), left: S(16), right: S(16), bottom: S(86), overflow: "hidden" }}>
+      {/* ── Verified pill — centered, below title ── */}
+      <div style={{
+        position: "absolute", top: S(184), left: 0, right: 0, zIndex: 10,
+        display: "flex", justifyContent: "center",
+        opacity: pillOpacity,
+      }}>
+        {/* Pill background opens from centre via clipPath */}
+        <div style={{
+          background: "#DEE7FF",
+          borderRadius: S(24),
+          paddingLeft: S(12), paddingRight: S(12),
+          paddingTop: S(8), paddingBottom: S(8),
+          display: "flex", alignItems: "center", gap: S(8),
+          clipPath: `inset(0 ${pillClip}% round ${S(24)}px)`,
+        }}>
+          {/* Shield icon slides in from left */}
+          <div style={{ opacity: contentOpacity, transform: `translateX(${iconX}px)`, flexShrink: 0, display: "flex", alignItems: "center" }}>
+            <ShieldCheck size={S(20)} color="#615FFF" weight="fill" />
+          </div>
+          {/* Text slides in from right */}
+          <span style={{
+            opacity: contentOpacity,
+            transform: `translateX(${textX}px)`,
+            fontSize: S(14), fontWeight: 600, color: "#615FFF",
+            fontFamily, whiteSpace: "nowrap", lineHeight: 1.4,
+          }}>
+            Deal Verified Today
+          </span>
+        </div>
+      </div>
+
+      {/* ── Cards area ── */}
+      <div style={{ position: "absolute", top: S(236), left: S(16), right: S(16), bottom: S(86), overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: S(8) }}>
 
-          {/* Card 1: Emirates / Date & Seating */}
+          {/* Card 1: Airline / Date & Seating */}
           <div style={{ ...card1Anim, ...WHITE_CARD }}>
             <div style={{ padding: S(16), display: "flex", gap: S(16), alignItems: "center" }}>
-              {/* Emirates badge: bg black, rounded-4, 48×48, image slightly overflows bottom */}
               <div style={{ width: S(48), height: S(48), borderRadius: S(4), overflow: "hidden", background: "#000000", flexShrink: 0 }}>
                 <Img src={staticFile("emirates.png")} style={{ width: "100%", height: "107%", objectFit: "cover", objectPosition: "top" }} />
               </div>
@@ -167,7 +213,7 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
                   Date &amp; Seating
                 </span>
                 <span style={{ fontSize: S(15), fontWeight: 590, color: "#27262A", letterSpacing: `-${0.23 * (1080 / 390)}px`, lineHeight: `${S(20)}px`, fontFamily }}>
-                  Sept - Dec 2024 &nbsp;•&nbsp; Economy
+                  {props.airlineName} &nbsp;•&nbsp; {props.travelClass}
                 </span>
               </div>
             </div>
@@ -176,30 +222,26 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
           {/* Card 2: Depart / Return */}
           <div style={{ ...card2Anim, ...WHITE_CARD }}>
             <div style={{ padding: S(24), display: "flex", flexDirection: "column", gap: S(16) }}>
-              {/* ── Depart section ── */}
               <span style={{ fontSize: S(13), fontWeight: 400, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Depart</span>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: S(16) }}>
-                {/* From (departure) */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
-                    <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
-                    <DashedLine />
-                  </div>
+              {/* From --- 1 stop --- To */}
+              <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
+                <DashedLine />
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>{props.stops}</span>
+                <DashedLine />
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
+              </div>
+              {/* Airport codes */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: S(4) }}>
                   <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dep.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, fontFamily }}>
                     <div>{dep.city}</div>
                     <div>{dep.airport}</div>
                   </div>
                 </div>
-                {/* Direct */}
-                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, paddingTop: S(8), flexShrink: 0 }}>direct</span>
-                {/* To (destination) */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), alignItems: "flex-end", minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: S(9), width: "100%" }}>
-                    <DashedLine />
-                    <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
-                  </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>{dst.code}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: S(4), alignItems: "flex-end" }}>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dst.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, textAlign: "right", fontFamily }}>
                     <div>{dst.city}</div>
                     <div>{dst.airport}</div>
@@ -207,30 +249,26 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
                 </div>
               </div>
 
-              {/* ── Return section ── */}
               <span style={{ fontSize: S(13), fontWeight: 400, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Return</span>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: S(16) }}>
-                {/* From (destination) */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
-                    <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
-                    <DashedLine />
-                  </div>
+              {/* From --- 1 stop --- To */}
+              <div style={{ display: "flex", alignItems: "center", gap: S(9) }}>
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>From</span>
+                <DashedLine />
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>{props.stops}</span>
+                <DashedLine />
+                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
+              </div>
+              {/* Airport codes */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: S(4) }}>
                   <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dst.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, fontFamily }}>
                     <div>{dst.city}</div>
                     <div>{dst.airport}</div>
                   </div>
                 </div>
-                {/* Direct */}
-                <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, paddingTop: S(8), flexShrink: 0 }}>direct</span>
-                {/* To (departure) */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: S(8), alignItems: "flex-end", minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: S(9), width: "100%" }}>
-                    <DashedLine />
-                    <span style={{ fontSize: S(12), color: "#27262A", letterSpacing: `${0.4 * (1080 / 390)}px`, lineHeight: `${S(16)}px`, fontFamily, whiteSpace: "nowrap" }}>To</span>
-                  </div>
-                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, textAlign: "right", fontFamily }}>{dep.code}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: S(4), alignItems: "flex-end" }}>
+                  <span style={{ fontSize: S(28), fontWeight: 700, color: "#000000", letterSpacing: `${0.38 * (1080 / 390)}px`, lineHeight: `${S(34)}px`, fontFamily }}>{dep.code}</span>
                   <div style={{ fontSize: S(12), color: "#8E8E93", lineHeight: `${S(16)}px`, textAlign: "right", fontFamily }}>
                     <div>{dep.city}</div>
                     <div>{dep.airport}</div>
@@ -245,12 +283,10 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
             <div style={{ padding: S(16), display: "flex", flexDirection: "column", gap: S(16) }}>
               <span style={{ fontSize: S(15), fontWeight: 590, color: "#000000", letterSpacing: `-${0.23 * (1080 / 390)}px`, lineHeight: `${S(20)}px`, fontFamily }}>Included Baggage</span>
               <div style={{ display: "flex", gap: S(24), alignItems: "center" }}>
-                {/* Carry On */}
                 <div style={{ display: "flex", alignItems: "center", gap: S(8) }}>
                   <Bag size={S(24)} color="#000000" weight="regular" />
                   <span style={{ fontSize: S(13), fontWeight: 510, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Carry On x 1</span>
                 </div>
-                {/* Check In */}
                 <div style={{ display: "flex", alignItems: "center", gap: S(8) }}>
                   <Suitcase size={S(24)} color="#000000" weight="regular" />
                   <span style={{ fontSize: S(13), fontWeight: 510, color: "#000000", letterSpacing: `-${0.08 * (1080 / 390)}px`, lineHeight: `${S(18)}px`, fontFamily }}>Check In x 2</span>
@@ -277,7 +313,7 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
         </div>
       </div>
 
-      {/* ── Bottom bar: bg white, drop-shadow, pb=24, pt=12, px=16 ── */}
+      {/* ── Bottom bar ── */}
       <div style={{
         ...bottomAnim,
         position: "absolute",
@@ -293,16 +329,14 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
         justifyContent: "space-between",
         zIndex: 10,
       }}>
-        {/* Price section */}
         <div style={{ display: "flex", flexDirection: "column", gap: S(2) }}>
           <div style={{ display: "flex", gap: S(8), alignItems: "flex-end" }}>
-            <span style={{ fontSize: S(17), fontWeight: 700, color: "#45B662", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{formattedPrice}</span>
+            <span style={{ fontSize: S(17), fontWeight: 700, color: "#06952B", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{formattedPrice}</span>
             <span style={{ fontSize: S(17), fontWeight: 400, color: "#3A3A3C", opacity: 0.5, textDecoration: "line-through", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>{props.originalPrice}</span>
           </div>
           <span style={{ fontSize: S(12), fontStyle: "italic", color: "#3A3A3C", opacity: 0.7, lineHeight: `${S(16)}px`, fontFamily }}>Deal lasts 4 days</span>
         </div>
-        {/* Book Deal button */}
-        <div style={{ background: "#7C3AED", borderRadius: S(8), paddingLeft: S(28), paddingRight: S(28), paddingTop: S(14), paddingBottom: S(14) }}>
+        <div style={{ background: "#007AFF", borderRadius: S(8), paddingLeft: S(28), paddingRight: S(28), paddingTop: S(14), paddingBottom: S(14) }}>
           <span style={{ fontSize: S(17), fontWeight: 400, color: "#FFFFFF", letterSpacing: `-${0.43 * (1080 / 390)}px`, lineHeight: `${S(22)}px`, fontFamily }}>Book Deal</span>
         </div>
       </div>

@@ -23,12 +23,9 @@ app.use((_req, res, next) => {
   next();
 });
 
-let bundleCache: string | null = null;
-
 async function getBundle(): Promise<string> {
-  if (bundleCache) return bundleCache;
-  console.log("Bundling Remotion composition (one-time, ~30s)…");
-  bundleCache = await bundle({
+  console.log("Bundling Remotion composition (~30s)…");
+  const bundleCache = await bundle({
     entryPoint: path.join(ROOT, "src", "index.ts"),
     publicDir: path.join(ROOT, "public"),
     webpackOverride: (config) => enableTailwind(config),
@@ -43,21 +40,35 @@ async function getBundle(): Promise<string> {
   return bundleCache;
 }
 
-app.post("/render", upload.single("destImage"), async (req, res) => {
-  let uploadedPath: string | null = null;
+const uploadFields = upload.fields([
+  { name: "destImage", maxCount: 1 },
+  { name: "airlineLogo", maxCount: 1 },
+]);
+
+app.post("/render", uploadFields, async (req, res) => {
+  const uploadedPaths: string[] = [];
   let outputPath: string | null = null;
   try {
     const deal: DealInput = JSON.parse(req.body.deal);
     const serveUrl = await getBundle();
+    const files = req.files as Record<string, Express.Multer.File[]> | undefined;
 
-    // If an image was uploaded, copy it into the bundle dir so Remotion's server can serve it
-    if (req.file) {
-      uploadedPath = req.file.path;
-      const ext = path.extname(req.file.originalname) || ".jpg";
+    const destFile = files?.["destImage"]?.[0];
+    if (destFile) {
+      uploadedPaths.push(destFile.path);
+      const ext = path.extname(destFile.originalname) || ".jpg";
       const filename = `upload-${Date.now()}${ext}`;
-      const dest = path.join(serveUrl, filename);
-      fs.copyFileSync(uploadedPath, dest);
+      fs.copyFileSync(destFile.path, path.join(serveUrl, filename));
       deal.destinationImageUrl = `/${filename}`;
+    }
+
+    const airlineFile = files?.["airlineLogo"]?.[0];
+    if (airlineFile) {
+      uploadedPaths.push(airlineFile.path);
+      const ext = path.extname(airlineFile.originalname) || ".png";
+      const filename = `airline-${Date.now()}${ext}`;
+      fs.copyFileSync(airlineFile.path, path.join(serveUrl, filename));
+      deal.airlineLogoUrl = `/${filename}`;
     }
 
     const props = deal as unknown as Record<string, unknown>;
@@ -85,21 +96,19 @@ app.post("/render", upload.single("destImage"), async (req, res) => {
     const stream = fs.createReadStream(outputPath);
     stream.pipe(res);
     stream.on("close", () => {
-      fs.unlink(outputPath!, () => {});
-      if (uploadedPath) fs.unlink(uploadedPath, () => {});
+      if (outputPath) fs.unlink(outputPath, () => {});
+      for (const p of uploadedPaths) fs.unlink(p, () => {});
     });
   } catch (err) {
     console.error("Render error:", err);
     if (outputPath) fs.unlink(outputPath, () => {});
-    if (uploadedPath) fs.unlink(uploadedPath, () => {});
+    for (const p of uploadedPaths) fs.unlink(p, () => {});
     res.status(500).send(err instanceof Error ? err.message : "Render failed");
   }
 });
 
 const server = app.listen(PORT, () => {
   console.log(`Render server running on http://localhost:${PORT}`);
-  // Pre-warm the bundle
-  getBundle().catch(console.error);
 });
 
 server.on("error", (err) => {
@@ -107,5 +116,4 @@ server.on("error", (err) => {
   process.exit(1);
 });
 
-// Keep process alive
 process.on("SIGINT", () => { server.close(); process.exit(0); });
