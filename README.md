@@ -1,54 +1,128 @@
-# Remotion video
+# Zomunk Video Generator
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+A tool for generating short-form flight deal videos for social media. Fill in the deal details, preview live on a phone mockup, and export a ready-to-post 1080×1920 MP4.
 
-Welcome to your Remotion project!
+Built with [Remotion](https://remotion.dev), React, and TypeScript.
 
-## Commands
+---
 
-**Install Dependencies**
+## Features
 
-```console
-npm i
+- **Live preview** — see both the list and details screens update as you type
+- **One-click render** — exports a polished 13-second vertical video (~4MB)
+- **Animated screens** — smooth transitions, price count-up, verified pill reveal
+- **Fully customisable** — destination, price, airline, stops, travel class, images
+- **Claude Code ready** — open in Claude Code and say "set it up" — it handles the rest
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org) v18 or higher
+- [Claude Code](https://claude.ai/code) *(optional — for one-command setup)*
+
+### With Claude Code
+
+```
+1. Clone the repo and open the folder in Claude Code
+2. Say: "set it up"
+3. Claude reads CLAUDE.md and gets everything running
 ```
 
-**Start Preview**
+### Manually
 
-```console
-npm run dev
+```bash
+# Clone
+git clone https://github.com/macjul003/zomunk-video-generator.git
+cd zomunk-video-generator
+
+# Install
+npm install
+
+# Start the tool
+npm run tool
 ```
 
-**Render video**
+Open **http://localhost:3006** in your browser.
 
-```console
-npx remotion render
+---
+
+## Usage
+
+1. Fill in the deal details on the left panel
+2. Upload a destination photo and airline logo
+3. Watch the live phone preview update in real time
+4. Hit **Render Video** — takes ~30–60 seconds
+5. The MP4 downloads automatically
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Video rendering | [Remotion](https://remotion.dev) |
+| UI framework | React + TypeScript |
+| Dev server | Vite |
+| Render server | Express + ts-node |
+| Icons | [Phosphor Icons](https://phosphoricons.com) |
+| Fonts | Plus Jakarta Sans (Google Fonts) |
+
+---
+
+## Project Structure
+
+```
+src/
+  screens/            # Four animated video screens
+    SplashScreen.tsx
+    ListScreen.tsx
+    DetailsScreen.tsx
+    ClosingScreen.tsx
+  Composition.tsx     # Timeline and transitions
+  Root.tsx            # Remotion entry point
+  types/
+    DealInput.ts      # Shared input interface
+tool/
+  ToolApp.tsx         # Tool UI
+  DealForm.tsx        # Form fields
+server/
+  render-server.ts    # Express render API
+public/               # Static assets
 ```
 
-**Upgrade Remotion**
+---
 
-```console
-npx remotion upgrade
-```
+## Scripts
 
-## Docs
+| Command | Description |
+|---------|-------------|
+| `npm run tool` | Start tool UI + render server |
+| `npm run dev` | Open Remotion Studio |
+| `npm run tool:ui` | Start tool UI only |
+| `npm run tool:server` | Start render server only |
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+---
 
-## Help
+## Ports
 
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
+| Port | Service |
+|------|---------|
+| 3006 | Tool UI |
+| 3003 | Render server |
+| 3000 | Remotion Studio (optional) |
 
-## Issues
+---
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
+## Contributing
 
-## License
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Open a pull request
 
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+---
+
+Built by [Zomunk](https://zomunk.com)
