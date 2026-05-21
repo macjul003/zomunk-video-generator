@@ -25,8 +25,8 @@ export const MyComposition: React.FC<DealInput> = (props) => (
       }}
     >
       <TransitionSeries>
-        <TransitionSeries.Sequence durationInFrames={90}>
-          <SplashScreen />
+        <TransitionSeries.Sequence durationInFrames={150}>
+          <SplashScreen userCountry={props.userCountry} userCountryCode={props.userCountryCode} />
         </TransitionSeries.Sequence>
 
         {/* Natural page push: Splash → List */}

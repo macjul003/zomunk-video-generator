@@ -1,8 +1,9 @@
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { loadFont } from "@remotion/google-fonts/PlusJakartaSans";
-import { AirTrafficControl, CaretDown, MagnifyingGlass } from "@phosphor-icons/react";
+import { CaretDown, MagnifyingGlass } from "@phosphor-icons/react";
 import type { DealInput } from "../types/DealInput";
+import { FLAG_MAP, FLAG_FALLBACK } from "../utils/flagMap";
 
 const { fontFamily } = loadFont();
 const S = (n: number) => n * (1080 / 390);
@@ -141,7 +142,7 @@ export const ListScreen: React.FC<DealInput> = (props) => {
 
           {/* Filter chips */}
           <div style={{ opacity: filterOpacity, paddingLeft: S(16), paddingRight: S(8), paddingTop: S(4), paddingBottom: S(8), display: "flex", gap: S(8), alignItems: "center" }}>
-            {(["Sort: Latest", "All Classes", "All Classes"] as const).map((label, i) => (
+            {(["Sort: Latest", "All Classes"] as const).map((label, i) => (
               <div key={i} style={{
                 background: "#F2F2F7", borderRadius: S(24),
                 paddingLeft: S(16), paddingRight: S(12),
@@ -196,7 +197,9 @@ export const ListScreen: React.FC<DealInput> = (props) => {
         <div style={{ paddingTop: S(12), paddingBottom: S(8), paddingLeft: S(24), paddingRight: S(24) }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: S(46) }}>
             <div style={{ display: "flex", alignItems: "center", gap: S(8), flex: 1, minWidth: 0 }}>
-              <AirTrafficControl size={S(22)} color="#000000" weight="duotone" style={{ flexShrink: 0 }} />
+              <div style={{ width: S(32), height: S(32), borderRadius: "50%", overflow: "hidden", border: `${S(1)}px solid rgba(0,0,0,0.12)`, flexShrink: 0 }}>
+                <Img src={staticFile(FLAG_MAP[props.userCountryCode] ?? FLAG_FALLBACK)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
               <span style={{ fontSize: S(18), fontWeight: 600, color: "#000000", lineHeight: `${S(24)}px`, fontFamily, whiteSpace: "nowrap" }}>{props.departure}</span>
               <CaretDown size={S(14)} color="#1C1C1E" weight="bold" style={{ flexShrink: 0 }} />
             </div>

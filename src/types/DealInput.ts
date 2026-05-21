@@ -11,4 +11,6 @@ export interface DealInput {
   travelPeriod: string;        // "Sept – Dec 2024"
   airlineLogoUrl: string;      // blob: URL, /uploads/<id>.png, or /airline-air-india.png
   airlineName: string;         // "Air India"
+  userCountry: string;         // "India"
+  userCountryCode: string;     // "IN"
 }

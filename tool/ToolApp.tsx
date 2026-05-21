@@ -18,6 +18,8 @@ const DEFAULT_DEAL: DealInput = {
   travelPeriod: "Sept – Dec 2026",
   airlineLogoUrl: "/airline-air-india.png",
   airlineName: "Emirates",
+  userCountry: "India",
+  userCountryCode: "IN",
 };
 
 const SCALE = 390 / 1080;

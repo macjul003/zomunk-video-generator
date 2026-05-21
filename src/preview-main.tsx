@@ -21,10 +21,12 @@ const DEFAULT_PROPS: DealInput = {
   travelPeriod: "Sept – Dec 2026",
   airlineLogoUrl: "/airline-air-india.png",
   airlineName: "Emirates",
+  userCountry: "India",
+  userCountryCode: "IN",
 };
 
 const screens = [
-  { label: "Splash",  component: SplashScreen,  hasProps: false },
+  { label: "Splash",  component: SplashScreen,  hasProps: true },
   { label: "List",    component: ListScreen,     hasProps: true },
   { label: "Details", component: DetailsScreen,  hasProps: true },
   { label: "Closing", component: ClosingScreen,  hasProps: false },

@@ -1,9 +1,21 @@
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { loadFont } from "@remotion/google-fonts/PlusJakartaSans";
+import type { DealInput } from "../types/DealInput";
+import { FLAG_MAP, FLAG_FALLBACK } from "../utils/flagMap";
 
 const { fontFamily } = loadFont();
 const S = (n: number) => n * (1080 / 390);
+
+const REEL_BASE = [
+  { name: "United Arab Emirates", code: "AE" },
+  { name: "United States",        code: "US" },
+  { name: "Singapore",            code: "SG" },
+  { name: "Australia",            code: "AU" },
+  { name: "Japan",                code: "JP" },
+  { name: "Philippines",          code: "PH" },
+  { name: "China",                code: "CN" },
+];
 
 // Figma: status bar icons are white on the purple gradient
 const StatusBar: React.FC = () => (
@@ -33,7 +45,9 @@ const StatusBar: React.FC = () => (
   </div>
 );
 
-export const SplashScreen: React.FC = () => {
+type SplashProps = Pick<DealInput, "userCountry" | "userCountryCode">;
+
+export const SplashScreen: React.FC<SplashProps> = ({ userCountry, userCountryCode }) => {
   const frame = useCurrentFrame();
 
   // Background fade in
@@ -56,8 +70,27 @@ export const SplashScreen: React.FC = () => {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
-  // Dots fade in
-  const dotsOpacity = interpolate(frame, [38, 52], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Country selector fade + slide
+  const countryOpacity = interpolate(frame, [42, 58], [0, 1], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const countryY = interpolate(frame, [42, 58], [S(20), 0], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+
+  // Slot-machine reel: spin through other countries, land on configured one
+  const others = REEL_BASE.filter((c) => c.code !== userCountryCode);
+  const sequence = [...others, ...others.slice(0, 3), { name: userCountry, code: userCountryCode }];
+  const ITEM_H = S(36);
+  const SPIN_START = 58;
+  const SPIN_END = 148; // 90 frames = 3 s
+  const reelY = interpolate(frame, [SPIN_START, SPIN_END], [0, -(sequence.length - 1) * ITEM_H], {
+    easing: Easing.out(Easing.poly(3)),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   // Button slide up
   const btnOpacity = interpolate(frame, [46, 64], [0, 1], {
@@ -116,12 +149,64 @@ export const SplashScreen: React.FC = () => {
           </p>
         </div>
 
-        {/* Pagination dots */}
-        <div style={{ opacity: dotsOpacity, display: "flex", gap: S(4), alignItems: "center", flexShrink: 0 }}>
-          <div style={{ width: S(8), height: S(8), borderRadius: "50%", background: "rgba(60,60,67,0.3)" }} />
-          <div style={{ width: S(24), height: S(8), borderRadius: S(16), background: "#8159DC" }} />
-          <div style={{ width: S(8), height: S(8), borderRadius: "50%", background: "rgba(60,60,67,0.3)" }} />
-          <div style={{ width: S(8), height: S(8), borderRadius: "50%", background: "rgba(60,60,67,0.3)" }} />
+      </div>
+
+      {/* Country selector — cycling pill */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          flexShrink: 0,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: S(16),
+          paddingBottom: S(32),
+          paddingLeft: S(20),
+          paddingRight: S(20),
+          opacity: countryOpacity,
+          transform: `translateY(${countryY}px)`,
+        }}
+      >
+        <p style={{ margin: 0, fontSize: S(12), fontWeight: 500, color: "#868686", textAlign: "center", lineHeight: "1", fontFamily, whiteSpace: "nowrap" }}>
+          Select Your Country
+        </p>
+
+        {/* Pill — slot machine reel */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          border: `${S(2)}px solid #2c2c2c`,
+          borderRadius: 9999,
+          paddingLeft: S(8),
+          paddingRight: S(16),
+          paddingTop: S(8),
+          paddingBottom: S(8),
+          overflow: "hidden",
+        }}>
+          {/* Reel window: shows exactly one row, clips overflow */}
+          <div style={{ position: "relative", height: ITEM_H, overflow: "hidden" }}>
+            {/* Invisible spacer — locks window width to the widest entry */}
+            <div style={{ visibility: "hidden", display: "flex", alignItems: "center", gap: S(8) }}>
+              <div style={{ width: S(36), height: S(36), flexShrink: 0 }} />
+              <p style={{ margin: 0, fontSize: S(16), fontWeight: 600, fontFamily, whiteSpace: "nowrap" }}>United Arab Emirates</p>
+            </div>
+            {/* Scrolling reel */}
+            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", transform: `translateY(${reelY}px)` }}>
+              {sequence.map((country, idx) => (
+                <div key={`${country.code}-${idx}`} style={{ height: ITEM_H, display: "flex", alignItems: "center", gap: S(8) }}>
+                  <Img
+                    src={staticFile(FLAG_MAP[country.code] ?? FLAG_FALLBACK)}
+                    style={{ width: S(36), height: S(36), borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                  />
+                  <p style={{ margin: 0, fontSize: S(16), fontWeight: 600, color: "#000", lineHeight: `${S(24)}px`, fontFamily, whiteSpace: "nowrap" }}>
+                    {country.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -9,7 +9,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="ZomunkReel"
         component={MyComposition as unknown as React.ComponentType<Record<string, unknown>>}
-        durationInFrames={405}
+        durationInFrames={465}
         fps={30}
         width={1080}
         height={1920}
@@ -26,6 +26,8 @@ export const RemotionRoot: React.FC = () => {
           travelPeriod: "Sept – Dec 2026",
           airlineLogoUrl: staticFile("airline-air-india.png"),
           airlineName: "Emirates",
+          userCountry: "India",
+          userCountryCode: "IN",
         }}
       />
     </>

@@ -118,6 +118,12 @@ export function DealForm({ deal, onChange, imageFile, onImageChange, airlineLogo
         <Field label="Country" value={deal.country} onChange={(v) => onChange({ country: v })} placeholder="Morocco" />
       </div>
 
+      {/* User Country (Splash screen) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 80px", gap: 12 }}>
+        <Field label="Your Country" value={deal.userCountry} onChange={(v) => onChange({ userCountry: v })} placeholder="India" />
+        <Field label="Code" value={deal.userCountryCode} onChange={(v) => onChange({ userCountryCode: v.toUpperCase().slice(0, 2) })} placeholder="IN" />
+      </div>
+
       {/* Departure */}
       <Field label="Departure City" value={deal.departure} onChange={(v) => onChange({ departure: v })} placeholder="New Delhi" />
 
