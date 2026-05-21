@@ -1,0 +1,18 @@
+[     285ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:14336
+[     843ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3006/favicon.ico:0
+[   33497ms] ReferenceError: AirplaneTilt is not defined
+    at ListScreen (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/src/screens/ListScreen.tsx?t=1779107365677:718:32)
+    at Object.react_stack_bottom_frame (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:12867:12)
+    at renderWithHooks (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:4212:19)
+    at updateFunctionComponent (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:5568:16)
+    at beginWork (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:6139:20)
+    at runWithFiberInDEV (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:850:66)
+    at performUnitOfWork (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:8428:92)
+    at workLoopSync (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:8324:37)
+    at renderRootSync (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:8308:6)
+    at performWorkOnRoot (http://localhost:3006/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:7993:27)
+[   33496ms] [WARNING] %s
+
+%s
+ An error occurred in the <ListScreen> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:3006/@vite/client:509

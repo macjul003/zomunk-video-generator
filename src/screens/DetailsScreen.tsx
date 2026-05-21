@@ -206,7 +206,7 @@ export const DetailsScreen: React.FC<DealInput> = (props) => {
           <div style={{ ...card1Anim, ...WHITE_CARD }}>
             <div style={{ padding: S(16), display: "flex", gap: S(16), alignItems: "center" }}>
               <div style={{ width: S(48), height: S(48), borderRadius: S(4), overflow: "hidden", background: "#000000", flexShrink: 0 }}>
-                <Img src={staticFile("emirates.png")} style={{ width: "100%", height: "107%", objectFit: "cover", objectPosition: "top" }} />
+                <Img src={staticFile("images/emirates.png")} style={{ width: "100%", height: "107%", objectFit: "cover", objectPosition: "top" }} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: S(8) }}>
                 <span style={{ fontSize: S(11), fontWeight: 400, color: "#8E8E93", letterSpacing: `${0.06 * (1080 / 390)}px`, lineHeight: `${S(13)}px`, fontFamily }}>

@@ -6,7 +6,7 @@ import { DealForm } from "./DealForm";
 import { useObjectUrl } from "./useObjectUrl";
 
 const DEFAULT_DEAL: DealInput = {
-  destinationImageUrl: "/figma-casablanca.png",
+  destinationImageUrl: "/images/figma-casablanca.png",
   destination: "Casablanca",
   country: "Morocco",
   departure: "New Delhi",
@@ -16,7 +16,7 @@ const DEFAULT_DEAL: DealInput = {
   stops: "1 stop",
   travelClass: "Economy",
   travelPeriod: "Sept – Dec 2026",
-  airlineLogoUrl: "/airline-air-india.png",
+  airlineLogoUrl: "/images/airline-air-india.png",
   airlineName: "Emirates",
   userCountry: "India",
   userCountryCode: "IN",

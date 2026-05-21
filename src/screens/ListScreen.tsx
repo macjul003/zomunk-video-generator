@@ -14,10 +14,10 @@ type DealData = {
 };
 
 const STATIC_DEALS: DealData[] = [
-  { destination: "Singapore",  country: "",            price: "₹84,560",   original: "₹1,08,900", imgUrl: staticFile("figma-singapore.png"),  fromCity: "New Delhi", stops: "direct",  airlineLogoUrl: staticFile("airline-air-india.png") },
-  { destination: "Seoul",      country: "South Korea", price: "₹1,10,240", original: "₹1,42,800", imgUrl: staticFile("figma-seoul.png"),       fromCity: "New Delhi", stops: "1 stop",  airlineLogoUrl: staticFile("airline-air-india.png") },
-  { destination: "Amsterdam",  country: "Netherlands", price: "₹1,24,800", original: "₹1,58,200", imgUrl: staticFile("figma-amsterdam.png"),   fromCity: "New Delhi", stops: "2 stops", airlineLogoUrl: staticFile("airline-air-india.png") },
-  { destination: "Paris",      country: "France",      price: "₹1,36,200", original: "₹1,72,400", imgUrl: staticFile("figma-paris.png"),       fromCity: "New Delhi", stops: "1 stop",  airlineLogoUrl: staticFile("airline-air-india.png") },
+  { destination: "Singapore",  country: "",            price: "₹84,560",   original: "₹1,08,900", imgUrl: staticFile("images/figma-singapore.png"),  fromCity: "New Delhi", stops: "direct",  airlineLogoUrl: staticFile("images/airline-air-india.png") },
+  { destination: "Seoul",      country: "South Korea", price: "₹1,10,240", original: "₹1,42,800", imgUrl: staticFile("images/figma-seoul.png"),       fromCity: "New Delhi", stops: "1 stop",  airlineLogoUrl: staticFile("images/airline-air-india.png") },
+  { destination: "Amsterdam",  country: "Netherlands", price: "₹1,24,800", original: "₹1,58,200", imgUrl: staticFile("images/figma-amsterdam.png"),   fromCity: "New Delhi", stops: "2 stops", airlineLogoUrl: staticFile("images/airline-air-india.png") },
+  { destination: "Paris",      country: "France",      price: "₹1,36,200", original: "₹1,72,400", imgUrl: staticFile("images/figma-paris.png"),       fromCity: "New Delhi", stops: "1 stop",  airlineLogoUrl: staticFile("images/airline-air-india.png") },
 ];
 
 // 54 (status bar) + 12 (pt) + 46 (row) + 8 (pb) = 120

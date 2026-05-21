@@ -119,7 +119,7 @@ export const SplashScreen: React.FC<SplashProps> = ({ userCountry, userCountryCo
       {/* Logo: 120×120 in Figma, bg #7C01E7, rounded-20, shadow */}
       <div style={{ opacity: iconOpacity, transform: `scale(${iconScale})`, position: "relative", zIndex: 1, flexShrink: 0 }}>
         <div style={{ width: S(120), height: S(120), borderRadius: S(20), overflow: "hidden", background: "#7C01E7", boxShadow: `0 ${S(8)}px ${S(30)}px rgba(124,1,231,0.45)` }}>
-          <Img src={staticFile("zomunk-logo.svg")} style={{ width: "100%", height: "100%" }} />
+          <Img src={staticFile("icons/zomunk-logo.svg")} style={{ width: "100%", height: "100%" }} />
         </div>
       </div>
 

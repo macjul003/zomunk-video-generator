@@ -1,0 +1,2 @@
+[     199ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3007/@fs/Users/mac/Development/Zomunk/zo-remotion-experiment/node_modules/.vite/deps/react-dom_client.js?v=3b4c1480:14336
+[     704ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3007/favicon.ico:0

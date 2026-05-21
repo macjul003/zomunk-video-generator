@@ -9,7 +9,7 @@ import type { DealInput } from "./types/DealInput";
 const SCALE = 390 / 1080;
 
 const DEFAULT_PROPS: DealInput = {
-  destinationImageUrl: "/figma-casablanca.png",
+  destinationImageUrl: "/images/figma-casablanca.png",
   destination: "Casablanca",
   country: "Morocco",
   departure: "New Delhi",
@@ -19,7 +19,7 @@ const DEFAULT_PROPS: DealInput = {
   stops: "1 stop",
   travelClass: "Economy",
   travelPeriod: "Sept – Dec 2026",
-  airlineLogoUrl: "/airline-air-india.png",
+  airlineLogoUrl: "/images/airline-air-india.png",
   airlineName: "Emirates",
   userCountry: "India",
   userCountryCode: "IN",

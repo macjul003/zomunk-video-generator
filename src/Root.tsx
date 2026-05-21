@@ -14,7 +14,7 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={{
-          destinationImageUrl: staticFile("figma-casablanca.png"),
+          destinationImageUrl: staticFile("images/figma-casablanca.png"),
           destination: "Casablanca",
           country: "Morocco",
           departure: "New Delhi",
@@ -24,7 +24,7 @@ export const RemotionRoot: React.FC = () => {
           stops: "1 stop",
           travelClass: "Economy",
           travelPeriod: "Sept – Dec 2026",
-          airlineLogoUrl: staticFile("airline-air-india.png"),
+          airlineLogoUrl: staticFile("images/airline-air-india.png"),
           airlineName: "Emirates",
           userCountry: "India",
           userCountryCode: "IN",
